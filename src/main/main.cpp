@@ -1,173 +1,93 @@
-// Set serial for debug console (to the Serial Monitor, default speed 115200)
-#define SerialMon Serial
+#define FIRWAREVERSION "0.01"
+#include <Arduino.h>
+#include <Connect.h>
+#include <SSLClient.h>
+#include <Button.h>
+#include "AWS_Root_CA.h" // This file is created using AmazonRootCA1.pem from https://www.amazontrust.com/repository/AmazonRootCA1.pem
 
-// Set serial for AT commands (to the module)
-// Use Hardware Serial on Mega, Leonardo, Micro
-#define SerialAT Serial1
+const uint8_t ledPin = 17;
+const uint8_t pwrPin = 2;
+const int8_t txPin = 4;
+const int8_t rxPin = 16;
 
-#define TINY_GSM_MODEM_SIM7000
-#define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
-#define SerialAT Serial1
+Button start(15, "Star");
+Button stop(26, "Stop");
 
-// See all AT commands, if wanted
-// #define DUMP_AT_COMMANDS
+Connect IOT(txPin, rxPin, pwrPin);
 
-// set GSM PIN, if any
-#define GSM_PIN ""
+void initSetup();
 
-// Your GPRS credentials, if any
-const char apn[] = "timbrasil.br"; //SET TO YOUR APN
-const char gprsUser[] = "tim";
-const char gprsPass[] = "tim";
+void IRAM_ATTR startHandle();
+void startLoop();
+bool startOn = false;
 
-#include <TinyGsmClient.h>
-#include <SPI.h>
-#include <SD.h>
-#include <Ticker.h>
-
-#ifdef DUMP_AT_COMMANDS
-#include <StreamDebugger.h>
-StreamDebugger debugger(SerialAT, SerialMon);
-TinyGsm modem(debugger);
-#else
-TinyGsm modem(SerialAT);
-#endif
-
-#define uS_TO_S_FACTOR 1000000ULL // Conversion factor for micro seconds to seconds
-#define TIME_TO_SLEEP 60          // Time ESP32 will go to sleep (in seconds)
-
-#define UART_BAUD 9600
-#define PIN_DTR 25
-#define PIN_TX 27
-#define PIN_RX 26
-#define PWR_PIN 4
-
-#define SD_MISO 2
-#define SD_MOSI 15
-#define SD_SCLK 14
-#define SD_CS 13
-#define LED_PIN 12
-
-void enableGPS(void)
-{
-    // Set SIM7000G GPIO4 LOW ,turn on GPS power
-    // CMD:AT+SGPIO=0,4,1,1
-    // Only in version 20200415 is there a function to control GPS power
-    modem.sendAT("+SGPIO=0,4,1,1");
-    if (modem.waitResponse(10000L) != 1)
-    {
-        DBG(" SGPIO=0,4,1,1 false ");
-    }
-    modem.enableGPS();
-}
-
-void disableGPS(void)
-{
-    // Set SIM7000G GPIO4 LOW ,turn off GPS power
-    // CMD:AT+SGPIO=0,4,1,0
-    // Only in version 20200415 is there a function to control GPS power
-    modem.sendAT("+SGPIO=0,4,1,0");
-    if (modem.waitResponse(10000L) != 1)
-    {
-        DBG(" SGPIO=0,4,1,0 false ");
-    }
-    modem.disableGPS();
-}
-
-void modemPowerOn()
-{
-    pinMode(PWR_PIN, OUTPUT);
-    digitalWrite(PWR_PIN, LOW);
-    delay(1000); //Datasheet Ton mintues = 1S
-    digitalWrite(PWR_PIN, HIGH);
-}
-
-void modemPowerOff()
-{
-    pinMode(PWR_PIN, OUTPUT);
-    digitalWrite(PWR_PIN, LOW);
-    delay(1500); //Datasheet Ton mintues = 1.2S
-    digitalWrite(PWR_PIN, HIGH);
-}
-
-void modemRestart()
-{
-    modemPowerOff();
-    delay(1000);
-    modemPowerOn();
-}
+void IRAM_ATTR stopHandle();
+void stopLoop();
+bool stopOn = false;
 
 void setup()
 {
-    // Set console baud rate
-    SerialMon.begin(115200);
-
-    delay(10);
-
-    // Set LED OFF
-    pinMode(LED_PIN, OUTPUT);
-    digitalWrite(LED_PIN, HIGH);
-
-    modemPowerOn();
-
-    SerialAT.begin(UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
-
-    Serial.println("/**********************************************************/");
-    Serial.println("To initialize the network test, please make sure your GPS");
-    Serial.println("antenna has been connected to the GPS port on the board.");
-    Serial.println("/**********************************************************/\n\n");
-
-    delay(10000);
-}
-
+    initSetup(); //Initial Setup
+    start.begin();
+    stop.begin();
+    IOT.begin();
+}UINT32_MAX
 void loop()
 {
-    if (!modem.testAT())
+    IOT.handle();
+    startLoop();
+    stopLoop();
+    digitalWrite(ledPin, !digitalRead(ledPin));
+    delay(60);
+    uint32_t rand = esp_random();
+}
+
+void IRAM_ATTR startHandle()
+{
+    detachInterrupt(start.pin());
+    startOn = false;
+    static int cont = 0;
+    Serial.println(cont);
+    cont++;
+}
+
+void startLoop()
+{
+    if (!startOn)
     {
-        Serial.println("Failed to restart modem, attempting to continue without restarting");
-        modemRestart();
-        return;
+        IOT.handle("{\"giveModule\": true, \"giveChip\": true, \"giveSensor\": true}");
+        delay(1000);
+        startOn = true;
+        attachInterrupt(start.pin(), startHandle, FALLING);
     }
+}
 
-    Serial.println("Start positioning . Make sure to locate outdoors.");
-    Serial.println("The blue indicator light flashes to indicate positioning.");
+void IRAM_ATTR stopHandle()
+{
+    detachInterrupt(stop.pin());
+    stopOn = false;
+    static int cont = 0;
+    Serial.println(cont);
+    cont++;
+}
 
-    enableGPS();
-
-    float lat, lon;
-    while (1)
+void stopLoop()
+{
+    if (!stopOn)
     {
-        if (modem.getGPS(&lat, &lon))
-        {
-            Serial.println("The location has been locked, the latitude and longitude are:");
-            Serial.print("latitude:");
-            Serial.println(lat);
-            Serial.print("longitude:");
-            Serial.println(lon);
-            break;
-        }
-        else
-            Serial.println("Ops");
-        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-        delay(2000);
+        IOT.handle("{\"ModuleSoldered\": true, \"ChipSoldered\": true, \"SensorSoldered\": true}");
+        delay(1000);
+        stopOn = true;
+        attachInterrupt(stop.pin(), stopHandle, FALLING);
     }
+}
 
-    disableGPS();
-
-    Serial.println("/**********************************************************/");
-    Serial.println("After the network test is complete, please enter the  ");
-    Serial.println("AT command in the serial terminal.");
-    Serial.println("/**********************************************************/\n\n");
-
-    while (1)
-    {
-        while (SerialAT.available())
-        {
-            SerialMon.write(SerialAT.read());
-        }
-        while (SerialMon.available())
-        {
-            SerialAT.write(SerialMon.read());
-        }
-    }
+void initSetup()
+{
+    Serial.begin(115200);
+    Serial.printf("Initing...\r\n");
+    Serial.printf("FirmWare:");
+    Serial.println(FIRWAREVERSION);
+    pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, HIGH); //signal ending of initial setup
 }

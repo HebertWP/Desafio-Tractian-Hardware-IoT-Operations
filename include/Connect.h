@@ -31,6 +31,7 @@ public:
     Connect(int8_t txPin, int8_t rxPin, int8_t pwrPin);
     void begin();
     bool handle();
+    bool handle(const char * info);
 
 private:
 //    static void callback(char *topic, byte *payload, unsigned int length);

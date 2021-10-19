@@ -47,7 +47,8 @@ bool Connect::initModem()
 
     mqtt_->clearWriteError();
     mqtt_->setClient(*client_);
-    modem_->gprsConnect(apnName, apnUser, apnPswd);
+    if(!modem_->isGprsConnected())
+        modem_->gprsConnect(apnName, apnUser, apnPswd);
     if (modem_->waitForNetwork())
     {
         Serial.printf("gprs connected\r\n");
@@ -63,14 +64,23 @@ bool Connect::initModem()
 bool Connect::handle()
 {
     this->reconnect();
+    if (client_->getWriteError() != 0)
+        client_->clearWriteError();
+    client_->flush();
+    return true;
+}
+bool Connect::handle(const char *info)
+{
+    this->handle();
+    bool ret = false;
+    
     if (mqtt_->connected())
     {
-        Serial.println("ola");
-        bool rc = mqtt_->publish("tractian", "oi");
+        ret = mqtt_->publish((*set_)["device_id"], info);
+        Serial.printf((*set_)["device_id"]);
         delay(100);
-        if (rc)
-            Serial.println("Foi");
     }
+    return ret;
 }
 
 void Connect::reconnect()
@@ -78,7 +88,6 @@ void Connect::reconnect()
     mqtt_->loop();
     if (!mqtt_->connected())
     {
-
         Serial.printf("Attempting MQTT connection...\r\n");
         if (mqtt_->connect("arduinoClient"))
         {

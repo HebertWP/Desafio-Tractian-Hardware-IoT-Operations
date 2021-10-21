@@ -22,5 +22,5 @@
 	"chip_id": "chip-05",
 	"step_id": "Preparation of Hardware Modules",
 	"work_pos_id": "work-01",
-	"position": "in"
+	"position": "out"
 }

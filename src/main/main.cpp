@@ -1,4 +1,8 @@
 #define FIRWAREVERSION "0.01"
+#define MESSAGE "{\"module_id\": \"module-07\", \"sensor_id\": \"sensor-02\", \"chip_id\": \"chip-05\", \"step_id\": \"Preparation of Hardware Modules\", \"work_pos_id\": \"work-01\", \"position\": \"in\"}"
+#define MESSAGEOUT "{\"module_id\": \"module-07\", \"sensor_id\": \"sensor-02\", \"chip_id\": \"chip-05\", \"step_id\": \"Preparation of Hardware Modules\", \"work_pos_id\": \"work-01\", \"position\": \"out\"}"
+#define TOPIC "iot/module/pos"
+
 #include <Arduino.h>
 #include <Connect.h>
 #include <SSLClient.h>
@@ -31,14 +35,14 @@ void setup()
     start.begin();
     stop.begin();
     IOT.begin();
-}UINT32_MAX
+}
 void loop()
 {
     IOT.handle();
     startLoop();
     stopLoop();
     digitalWrite(ledPin, !digitalRead(ledPin));
-    delay(60);
+    delay(10);
     uint32_t rand = esp_random();
 }
 
@@ -53,9 +57,16 @@ void IRAM_ATTR startHandle()
 
 void startLoop()
 {
+    static bool first = true;
     if (!startOn)
     {
-        IOT.handle("{\"giveModule\": true, \"giveChip\": true, \"giveSensor\": true}");
+        if (!first)
+        {
+            IOT.handle(MESSAGE, TOPIC);
+            Serial.println("IN");
+        }
+        else
+            first = false;
         delay(1000);
         startOn = true;
         attachInterrupt(start.pin(), startHandle, FALLING);
@@ -73,9 +84,13 @@ void IRAM_ATTR stopHandle()
 
 void stopLoop()
 {
+    static bool first = true;
     if (!stopOn)
     {
-        IOT.handle("{\"ModuleSoldered\": true, \"ChipSoldered\": true, \"SensorSoldered\": true}");
+        if (!first)
+            IOT.handle(MESSAGEOUT, TOPIC);
+        else
+            first = false;
         delay(1000);
         stopOn = true;
         attachInterrupt(stop.pin(), stopHandle, FALLING);

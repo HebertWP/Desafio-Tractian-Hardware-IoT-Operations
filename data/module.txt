@@ -1,0 +1,26 @@
+//Errros//
+{
+	"module_id": "module-01",
+	"step_id": "Closing and finishing the sensor in the box",
+	"work_pos_id": "work-09",
+	"error_identification": "Not working from factory"
+}
+
+//Quality//
+
+{
+	"module_id": "module-01",
+	"step_id": "Shipping to customer",
+	"work_pos_id": "user",
+	"quality_control": "some scratches, but working fine"
+}
+
+//Status//
+{
+	"module_id": "module-01",
+	"sensor_id": "sensor-02",
+	"chip_id": "chip-05",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "in"
+}

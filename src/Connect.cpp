@@ -63,21 +63,22 @@ bool Connect::initModem()
 
 bool Connect::handle()
 {
+    client_->flush();
+    if (client_->getWriteError() != 0)
+        client_->clearWriteError();
     this->reconnect();
     if (client_->getWriteError() != 0)
         client_->clearWriteError();
     client_->flush();
     return true;
 }
-bool Connect::handle(const char *info)
+bool Connect::handle(const char *info,const char *topic)
 {
     this->handle();
     bool ret = false;
-    
     if (mqtt_->connected())
     {
-        ret = mqtt_->publish((*set_)["device_id"], info);
-        Serial.printf((*set_)["device_id"]);
+        ret = mqtt_->publish(topic, info);
         delay(100);
     }
     return ret;

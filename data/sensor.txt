@@ -1,0 +1,64 @@
+//Errros//
+{
+	"sensor_id": "sensor-01",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"error_identification": "Not working from factory"
+}
+
+{
+	"sensor_id": "sensor-01",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-01",
+	"error_identification": "Uncalibrated"
+}
+
+//Quality//
+
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"quality_control": "Electrical Test ok"
+}
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-01",
+	"quality_control": "Measure ok"
+}
+
+//Status//
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "in"
+}
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "out"
+}
+
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-03",
+	"position": "in"
+}
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-03",
+	"position": "out"
+}
+
+{
+	"sensor_id": "sensor-02",
+	"step_id": "Preparation of the sensor box",
+	"work_pos_id": "work-04",
+	"position": "in"
+}
+

@@ -1,0 +1,170 @@
+{
+	"chip_id": "chip-01",
+	"work_pos_id": "work-01",
+	"step_id": "Preparation of Hardware Modules",
+	"error_identification": "none",
+	"quality_control": "normal operation",
+	"status": "in hardware soldering"
+}
+
+{
+	"chip_id": "chip-02",
+	"work_pos_id": "work-02",
+	"step_id": "Preparation of Hardware Modules",
+	"error_identification": "none",
+	"quality_control": "normal operation",
+	"status": "in hardware soldering"
+}
+//Status//
+{
+	"chip_id": "chip-01",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "in"
+}
+
+{
+	"chip_id": "chip-01",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "out"
+}
+
+{
+	"chip_id": "chip-10",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "in"
+}
+{
+	"chip_id": "chip-10",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "out"
+}
+{
+	"chip_id": "chip-11",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "in"
+}
+{
+	"chip_id": "chip-11",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "out"
+}
+{
+	"chip_id": "chip-12",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"position": "in"
+}
+
+{
+	"chip_id": "chip-10",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-03",
+	"position": "in"
+}
+//Errros//
+{
+	"chip_id": "chip-01",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"error_identification": "Cold Joint"
+}
+
+{
+	"chip_id": "chip-02",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"error_identification": "none"
+}
+
+{
+	"chip_id": "chip-03",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"error_identification": "Eletric Test failed"
+}
+
+{
+	"chip_id": "chip-04",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-02",
+	"error_identification": "Eletric Test failed"
+}
+//firmaware//
+
+{
+	"chip_id": "chip-04",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-03",
+	"error_identification": "wrong firmware"
+}
+//Preparation of the sensor box//
+{
+	"chip_id": "chip-05",
+	"step_id": "Preparation of the sensor box",
+	"work_pos_id": "work-04",
+	"error_identification": "Anderson"
+}
+
+//Shipping to customer//
+{
+	"chip_id": "chip-02",
+	"step_id": "Shipping to customer",
+	"work_pos_id": "work-04",
+	"error_identification": "meteor"
+}
+
+//Quality//
+
+{
+	"chip_id": "chip-06",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"quality_control": "Eltrical Test ok"
+}
+{
+	"chip_id": "chip-07",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"quality_control": "Eltrical Test ok"
+}
+
+{
+	"chip_id": "chip-06",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-03",
+	"quality_control": "Software Test ok"
+}
+
+{
+	"chip_id": "chip-05",
+	"step_id": "Preparation of Hardware Modules",
+	"work_pos_id": "work-01",
+	"quality_control": "Eltrical Test ok"
+}
+
+{
+	"chip_id": "chip-05",
+	"step_id": "Firmware Programming",
+	"work_pos_id": "work-03",
+	"quality_control": "Software Test ok"
+}
+
+{
+	"chip_id": "chip-05",
+	"step_id": "Closing and finishing the sensor in the box",
+	"work_pos_id": "work-06",
+	"quality_control": "Final test before send ok"
+}
+
+{
+	"chip_id": "chip-05",
+	"step_id": "Shipping to customer",
+	"work_pos_id": "user",
+	"quality_control": "He is happy"
+}

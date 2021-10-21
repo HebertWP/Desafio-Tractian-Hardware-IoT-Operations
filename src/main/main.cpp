@@ -14,13 +14,20 @@ const uint8_t pwrPin = 2;
 const int8_t txPin = 4;
 const int8_t rxPin = 16;
 
+/*Buttons on*/
 Button start(15, "Star");
 Button stop(26, "Stop");
 
+/*Connection with internet*/
 Connect IOT(txPin, rxPin, pwrPin);
 
+/**
+ * @brief set common configurations
+ * 
+ */
 void initSetup();
 
+/* To use interruptss */
 void IRAM_ATTR startHandle();
 void startLoop();
 bool startOn = false;
@@ -57,7 +64,7 @@ void IRAM_ATTR startHandle()
 
 void startLoop()
 {
-    static bool first = true;
+    static bool first = true; // used to do not send information in first attach
     if (!startOn)
     {
         if (!first)

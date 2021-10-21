@@ -8,5 +8,5 @@ Button::Button(uint8_t pin, char *name)
 
 void Button::begin()
 {
-    pinMode(pin_, INPUT_PULLUP);
+    pinMode(pin_, INPUT_PULLUP);//Dont need to use external pul up resistor
 }

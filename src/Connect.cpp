@@ -9,11 +9,12 @@ Connect::Connect(int8_t txPin, int8_t rxPin, int8_t pwrPin)
     txPin_ = txPin;
     rxPin_ = rxPin;
     pwrPin_ = pwrPin;
+    /*Use internal Hardware, because of it this class for can have just a single element */
     serialAT_ = new HardwareSerial(1);
     modem_ = new TinyGsm(*serialAT_);
 
     clientnoSSL_ = new TinyGsmClient(*modem_);
-
+    /* Keep gpio 36 in floating to random signal generator*/
     client_ = new SSLClient(*clientnoSSL_, TAs, (size_t)TAs_NUM, 36, 1, SSLClient::DebugLevel::SSL_ERROR);
 
     mqtt_ = new PubSubClient();
@@ -28,7 +29,8 @@ void Connect::begin()
 
     mqtt_->setServer(mqttServer, mqttPort); //mqtt client
     mqtt_->setBufferSize(10240);
-
+    
+    /*set up serial connection with modem_*/
     serialAT_->begin(9600, SERIAL_8N1, txPin_, rxPin_);
     pinMode(pwrPin_, OUTPUT);
     digitalWrite(pwrPin_, LOW);
@@ -39,14 +41,16 @@ void Connect::begin()
 bool Connect::initModem()
 {
     bool out = false;
-
+    /* power up */
     digitalWrite(pwrPin_, HIGH);
     delay(4000);
     digitalWrite(pwrPin_, LOW);
     delay(4000);
 
+    /*clear erro from OpenSSL*/
     mqtt_->clearWriteError();
     mqtt_->setClient(*client_);
+    /*connect 2G*/
     if(!modem_->isGprsConnected())
         modem_->gprsConnect(apnName, apnUser, apnPswd);
     if (modem_->waitForNetwork())
@@ -63,6 +67,7 @@ bool Connect::initModem()
 
 bool Connect::handle()
 {
+    /*clear error*/
     client_->flush();
     if (client_->getWriteError() != 0)
         client_->clearWriteError();
@@ -74,8 +79,10 @@ bool Connect::handle()
 }
 bool Connect::handle(const char *info,const char *topic)
 {
+    /*keep Connection*/
     this->handle();
     bool ret = false;
+    /*sending information*/
     if (mqtt_->connected())
     {
         ret = mqtt_->publish(topic, info);
